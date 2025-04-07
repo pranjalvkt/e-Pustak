@@ -13,6 +13,7 @@ import EBookReader from "@/components/EBookReader";
 import { LanguageContext } from "@/context/LanguageContext";
 import useTranslation from "../hooks/useTranslation";
 import categories from "@/utils/categories";
+import ComboBox from "@/components/ComboBox";
 
 const App = () => {
   const [view, setView] = useState("home");
@@ -26,13 +27,15 @@ const App = () => {
   const { localise } = useTranslation();
 
   useEffect(() => {
-    fetch("/json/aartis.json").then((res) => {
-      res.json().then((data) => {
-        setBooks(data.book);
+    fetch("/json/aartis.json")
+      .then((res) => {
+        res.json().then((data) => {
+          setBooks(data.book);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }).catch((err)=> {
-      console.log(err);
-    });
   }, []);
 
   useEffect(() => {
@@ -54,6 +57,11 @@ const App = () => {
     const updatedFavorites = favorites.filter((fav) => fav.id !== itemId);
     setFavorites(updatedFavorites);
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
+
+  const handleCategorySelect = (category) => {
+    setView("reader");
+    setCurrentBook(category);
   };
 
   if (view === "reader") {
@@ -80,13 +88,10 @@ const App = () => {
             </button>
           </div>
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder={localise("search")}
-              className="w-full py-2 pl-10 pr-4 rounded-lg bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+            <ComboBox
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              onCategorySelect={handleCategorySelect}
             />
           </div>
         </div>
@@ -103,10 +108,13 @@ const App = () => {
                 key={book.id}
                 className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer relative"
               >
-                <h3 className="font-serif text-lg text-[#2c1810]" onClick={() => {
-                  setCurrentBook(book);
-                  setView("reader");
-                }}>
+                <h3
+                  className="font-serif text-lg text-[#2c1810]"
+                  onClick={() => {
+                    setCurrentBook(book);
+                    setView("reader");
+                  }}
+                >
                   {book.title}
                 </h3>
                 <FiX
@@ -124,7 +132,13 @@ const App = () => {
           </h2>
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
-              <Link key={category.en} className="px-4 py-2 bg-white rounded-full text-[#2c1810] hover:bg-[#2c1810] hover:text-white transition-colors shadow-sm cursor-pointer" href={"category/" + category.id}>{language === "en" ? category.en : category.hi}</Link>
+              <Link
+                key={category.en}
+                className="px-4 py-2 bg-white rounded-full text-[#2c1810] hover:bg-[#2c1810] hover:text-white transition-colors shadow-sm cursor-pointer"
+                href={"category/" + category.id}
+              >
+                {language === "en" ? category.en : category.hi}
+              </Link>
             ))}
           </div>
         </section>
@@ -150,7 +164,11 @@ const App = () => {
                     {book.title}
                   </h3>
                   <FiStar
-                    className={`absolute bottom-5 right-4 ${favorites.some(fav => fav.id === book.id) ? "text-yellow-500 fill-current" : "text-gray-500"}`}
+                    className={`absolute bottom-5 right-4 ${
+                      favorites.some((fav) => fav.id === book.id)
+                        ? "text-yellow-500 fill-current"
+                        : "text-gray-500"
+                    }`}
                     onClick={() => addToFavorites(book)}
                   />
                 </div>
