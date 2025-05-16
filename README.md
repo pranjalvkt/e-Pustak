@@ -1,40 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 📚 e-Pustak
 
-## Getting Started
+**e-Pustak** is a spiritual and devotional e-library that brings a curated collection of Aartis, Bhajans, Chalisas, Mantras, Stotras, and other sacred texts in Hindi to your fingertips. Built with simplicity and accessibility in mind, it offers an immersive and personalized reading experience for seekers and devotees.
 
-First, run the development server:
+## 🌐 Live Demo
+
+👉 [https://e-pustak.vercel.app/](https://e-pustak.vercel.app/)
+
+---
+
+## 📖 Features
+
+### 🔥 Favourites
+- Easily add any text to your favourites for quick access later.
+- Persistent favourites saved locally in the browser.
+
+### 🗂️ Categories
+- Browse devotional content by well-organized categories:
+  - Aartis
+  - Chalisas
+  - Bhajans
+  - Mantras
+  - Stotras
+  - Others
+
+### 💡 Recommendations
+- Get 5 randomly selected books each time you load the app.
+- Great for discovering new content without searching.
+
+### 🔍 Search
+- Quickly find any text by name or keyword.
+
+### 🌍 Localization
+- Switch between supported languages to match your reading preference.
+- Ideal for multi-lingual users or those learning Hindi.
+
+### 📱 Responsive Design
+- Optimized for desktop and mobile devices.
+- Clean, distraction-free UI for better readability.
+
+---
+
+## 🛠️ Built With
+
+- **React** – UI Components
+- **Next.js** – Framework for SSR & routing
+- **Tailwind CSS** – Styling
+- **Vercel** – Deployment and serverless hosting
+- **LocalStorage** – For favourites persistence
+
+---
+
+## 🚀 Getting Started
+
+### Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+git clone https://github.com/yourusername/e-pustak.git
+cd e-pustak
