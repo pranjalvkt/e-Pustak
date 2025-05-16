@@ -1,14 +1,13 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { FiArrowLeft } from "react-icons/fi";
 
 export default function EBookReader({ onBack, book }) {
   if (!book) {
     return <></>;
   }
-  const [currentPage, setCurrentPage] = useState(0);
+
   const containerRef = useRef(null);
-  const isSwipe = false;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
