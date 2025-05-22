@@ -80,6 +80,7 @@ export default function App() {
           remove={remove}
         />
       </main>
+      <p className="fixed bottom-0 w-full text-center p-4 bg-white text-gray-500">Crafted with passion ❤️‍🔥👨🏻‍💻 by Pranjal.</p>
     </div>
   );
 }
