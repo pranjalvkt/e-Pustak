@@ -46,7 +46,7 @@ export default function App() {
         setSearchQuery={setSearchQuery}
         onSelect={readBook}
       />
-      <main className="max-w-6xl mx-auto p-4">
+      <main className="max-w-6xl mx-auto p-4 pb-16">
         <FavoritesList
           favorites={favorites}
           onRead={readBook}
@@ -80,7 +80,7 @@ export default function App() {
           remove={remove}
         />
       </main>
-      <p className="fixed bottom-0 w-full text-center p-4 bg-white text-gray-500">Crafted with passion ❤️‍🔥👨🏻‍💻 by Pranjal.</p>
+      <p className="fixed bottom-0 text-gray-500 left-0 w-full text-center bg-white p-4 shadow">Crafted with passion ❤️‍🔥👨🏻‍💻 by Pranjal.</p>
     </div>
   );
 }
