@@ -1,0 +1,43 @@
+LOG_DIR=".git/hooks/logs"
+SUCCESS_LOG="$LOG_DIR/pre-commit-success.log"
+ERROR_LOG="$LOG_DIR/pre-commit-error.log"
+
+mkdir -p "$LOG_DIR"
+echo "=== Pre-commit started at $(date) ===" > "$SUCCESS_LOG"
+echo "=== Pre-commit started at $(date) ===" > "$ERROR_LOG"
+
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$')
+
+if [ -z "$FILES" ]; then
+  echo "✅ No relevant files staged." | tee -a "$SUCCESS_LOG"
+  echo "✅ Nothing to check." 
+  exit 0
+fi
+
+# Run prettier
+echo "🧹 Running Prettier..."
+if ! npx prettier --check $FILES >> "$SUCCESS_LOG" 2>> "$ERROR_LOG"; then
+  echo "❌ Prettier check failed. See below:" >&2
+  tail -n 20 "$ERROR_LOG" >&2
+  exit 1
+fi
+
+echo "📏 Checking for large files..."
+for file in $FILES; do
+  SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file")
+  if [ "$SIZE" -gt 512000 ]; then
+    echo "❌ File $file is too large ($SIZE bytes)." | tee -a "$ERROR_LOG" >&2
+    exit 1
+  fi
+done
+
+# Run tests
+echo "🧪 Running unit tests..."
+if ! npm test -- --bail >> "$SUCCESS_LOG" 2>> "$ERROR_LOG"; then
+  echo "❌ Unit tests failed. See below:" >&2
+  tail -n 20 "$ERROR_LOG" >&2
+  exit 1
+fi
+
+echo "✅ All checks passed!" | tee -a "$SUCCESS_LOG"
+exit 0
