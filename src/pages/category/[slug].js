@@ -3,18 +3,11 @@ import { LanguageContext } from "@/context/LanguageContext";
 import useTranslation from "@/hooks/useTranslation";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import {
-  FiArrowLeft,
-  FiGlobe,
-  FiSearch,
-  FiStar,
-  FiTarget,
-  FiX,
-} from "react-icons/fi";
+import { FiStar, FiTarget, FiX } from "react-icons/fi";
 import { getCategoryTextById } from "@/utils/helper";
-import Link from "next/link";
 import UnderDevelopment from "@/components/UnderDevelopment";
 import EBookReader from "@/components/EBookReader";
+import Header from "@/components/v2/Header";
 
 export default function Page() {
   const router = useRouter();
@@ -25,7 +18,7 @@ export default function Page() {
   const [favorites, setFavorites] = useState([]);
   const [currentBook, setCurrentBook] = useState(null);
 
-  const { language, changeLanguage } = useContext(LanguageContext);
+  const { language } = useContext(LanguageContext);
   const { localise } = useTranslation();
 
   const currentCategory = getCategoryTextById(slug, language);
@@ -61,43 +54,21 @@ export default function Page() {
 
   if (currentBook) {
     return (
-      <EBookReader
-        book={currentBook}
-        onBack={() => setCurrentBook(null)}
-      />
+      <EBookReader book={currentBook} onBack={() => setCurrentBook(null)} />
     );
   }
 
+  const readBook = (book) => {
+    setCurrentBook(book);
+  };
+
   return (
     <>
-      <header className="bg-[#2c1810] text-white p-4 shadow-lg">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-4">
-            <Link href="/">
-              <FiArrowLeft className="w-6 h-6 cursor-pointer" />
-            </Link>
-            <h1 className="text-2xl font-serif">{localise("appTitle")}</h1>
-            <button
-              onClick={() =>
-                changeLanguage(language === "hi" ? "en" : "hi")
-              }
-              className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            >
-              <FiGlobe className="w-6 h-6" />
-            </button>
-          </div>
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder={localise("search")}
-              className="w-full py-2 pl-10 pr-4 rounded-lg bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
-      </header>
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSelect={readBook}
+      />
 
       <div className="min-h-screen bg-[#f8f4e8]">
         <main className="max-w-6xl mx-auto p-4">
