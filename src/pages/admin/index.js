@@ -4,7 +4,7 @@ import ClientDate from "../../components/v2/ClientDate";
 
 const PieChartComponent = dynamic(
   () => import("../../components/v2/PieChartComponent"),
-  { ssr: false }
+  { ssr: false },
 );
 
 export default function StatsPage({ visitorData }) {
