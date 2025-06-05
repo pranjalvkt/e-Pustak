@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Header from "@/components/v2/Header";
 import FavoritesList from "@/components/v2/FavoritesList";
 import BookList from "@/components/v2/BookList";
@@ -21,6 +21,14 @@ export default function App() {
   const { favorites, add, remove, exists } = useFavorites();
   const { localise } = useTranslation();
   const { language } = useContext(LanguageContext);
+
+  useEffect(() => {
+    fetch("/api/geolocation")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("User location logged:", data.location);
+      });
+  }, []);
 
   const readBook = (book) => {
     setCurrentBook(book);
