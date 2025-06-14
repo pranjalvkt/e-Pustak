@@ -1,26 +1,39 @@
 import dynamic from "next/dynamic";
 import clientPromise from "../../../lib/mongodb";
 import ClientDate from "../../components/v2/ClientDate";
+import StatCard from "@/components/v2/StatCard";
 
 const PieChartComponent = dynamic(
   () => import("../../components/v2/PieChartComponent"),
   { ssr: false },
 );
 
-export default function StatsPage({ visitorData }) {
+export default function StatsPage({ visitorData, installs, browserStats }) {
   const cityData = getCityDistribution(visitorData);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-6">Visitor Stats Dashboard</h1>
-
+      <div className="bg-white rounded-2xl shadow p-4 mb-2 flex justify-around">
+        <StatCard label={"Total Visits"} value={visitorData.length} />
+        <StatCard label={"Total PWA Installs"} value={installs} />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl shadow p-4">
-          <h2 className="text-xl font-semibold mb-4">Visitors by Country</h2>
+          <h2 className="text-xl font-semibold text-center mb-4">
+            Visitors by Country
+          </h2>
           <PieChartComponent data={cityData} />
         </div>
 
-        <div className="bg-white rounded-2xl shadow p-4 overflow-x-auto">
+        <div className="bg-white rounded-2xl shadow p-4">
+          <h2 className="text-lg font-semibold text-center mb-4">
+            User Agents
+          </h2>
+          <PieChartComponent data={browserStats} />
+        </div>
+
+        <div className="md:col-span-2 bg-white p-4 shadow rounded">
           <h2 className="text-xl font-semibold mb-4">Recent Visitors</h2>
           <table className="min-w-full text-sm">
             <thead className="bg-gray-200 text-gray-700">
@@ -62,10 +75,29 @@ function getCityDistribution(data) {
   });
   return Object.entries(countMap).map(([name, value]) => ({ name, value }));
 }
+function getBrowserStats(data) {
+  const stats = {};
+
+  data.forEach(({ name, value }) => {
+    let browser = "Other";
+
+    if (name.includes("Chrome") && !name.includes("Edg")) browser = "Chrome";
+    else if (name.includes("Firefox")) browser = "Firefox";
+    else if (name.includes("Safari") && !name.includes("Chrome"))
+      browser = "Safari";
+    else if (name.includes("Edg")) browser = "Edge";
+    else if (name === "Unknown") browser = "Unknown";
+
+    stats[browser] = (stats[browser] || 0) + value;
+  });
+
+  return Object.entries(stats).map(([name, value]) => ({ name, value }));
+}
 
 export async function getServerSideProps() {
   const client = await clientPromise;
   const db = client.db("geo-analytics");
+  const installs = await db.collection("pwa_installs").countDocuments();
   const visitors = await db
     .collection("visitors")
     .find()
@@ -78,8 +110,20 @@ export async function getServerSideProps() {
     _id: v._id.toString(),
     timestamp: new Date(v.timestamp).toISOString(),
   }));
+  const agentMap = {};
+  visitors.forEach(({ userAgent }) => {
+    const agent = userAgent || "Unknown";
+    agentMap[agent] = (agentMap[agent] || 0) + 1;
+  });
+
+  const chartData = Object.entries(agentMap).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  const browserStats = getBrowserStats(chartData);
 
   return {
-    props: { visitorData },
+    props: { visitorData, installs, browserStats },
   };
 }

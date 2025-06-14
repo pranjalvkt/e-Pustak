@@ -12,11 +12,12 @@ export default async function handler(req, res) {
       ip === "::1" ||
       ip === "127.0.0.1"
     ) {
-      ip = "8.8.8.8";
+      ip = "8.8.8.8"; // test IP for local development
     }
 
     const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
     const geoData = await geoRes.json();
+    let userAgent = req.headers["user-agent"] || "Unknown";
 
     const visitor = {
       ip: geoData.ip || ip,
@@ -25,8 +26,9 @@ export default async function handler(req, res) {
       country: geoData.country_name || null,
       postal: geoData.postal || null,
       timezone: geoData.timezone || null,
+      userAgent,
       timestamp: new Date(),
-      isTestData: ip === "8.8.8.8" ? true : false,
+      isTestData: ip === "8.8.8.8",
     };
 
     const client = await clientPromise;
